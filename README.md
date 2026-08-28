@@ -1,15 +1,117 @@
-# Nbprime - Prime 平台的全新二进制（**N**ew **B**inary for **Prime**）
+# Nbprime – **N**ew **B**inary for **Prime**
 
-make HP Prime great again.
+English | [简体中文](README.zh-CN.md)
 
-## 我们是谁？
+[![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![GitHub stars](https://img.shields.io/github/stars/lcd-xvii/nbprime)]()
 
-我们是 Prime 计算器（旧称 *HP Prime*，以下简称 Prime）爱好者，致力于通过越过 Prime 官方操作系统运行二进制程序，充分释放 Prime 硬件性能；同时构建 Prime 二进制软件包，优化 Prime 开发体验，为全球 Prime 爱好者搭建平台，与世界计算器爱好者交流互鉴。
+***Make Prime Great Again.***
 
-## 这是什么项目？
+## What is this project?
 
-这是以为 Prime 开发二进制程序为核心的、集 Prime 系统破解、硬件操控、软件开发、社区资源为一体的项目，旨在为 Prime 用户提供更丰富的选择、更好的体验，为 Prime 开发者提供完善的工具链、充足的文档。
+**Nbprime** is an open-source project for Prime calculators (formerly HP Prime). Its core goals are threefold:
+1. **Unlock hardware performance** – by bypassing the official operating system and running bare‑metal binaries directly, tapping into the Prime’s low‑level potential.
+2. **Provide a complete toolchain** – offering developers a one‑stop solution for compiling, debugging, and deploying.
+3. **Build a community ecosystem** – bringing together Prime enthusiasts worldwide to share technology, experience, and creativity.
 
-## 你可以做什么？
+The project is currently in its early stages, with a basic binary loader prototype already implemented and several example programs available. We warmly invite you to join and contribute!
 
-无论你是对嵌入式硬件、迷你操作系统还是资源受限的应用程序感兴趣抑或有任何经验的**开发者**，或者是希望改进使用体验的**普通 Prime 爱好者**，甚至是对计算器感兴趣的**计算器爱好者**，这里都有你的贡献空间！尽情提 Issue 吧！
+> *(Placeholder for actual device photo or project icon)*
+
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <defs>
+    <linearGradient id="calcBody" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#333;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#111;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <rect x="25" y="20" width="150" height="160" rx="15" fill="url(#calcBody)" stroke="#666" stroke-width="2" />
+  <rect x="45" y="35" width="110" height="50" rx="6" fill="#e7e2e2" opacity="0.8" />
+  <text x="100" y="70" font-family="monospace" font-size="28" font-weight="bold" fill="#201c1c" text-anchor="middle" dominant-baseline="middle">Nbprime</text>
+  <circle cx="55" cy="115" r="8" fill="#aaa" />
+  <circle cx="85" cy="115" r="8" fill="#aaa" />
+  <circle cx="115" cy="115" r="8" fill="#aaa" />
+  <circle cx="145" cy="115" r="8" fill="#f44336" />
+  <circle cx="55" cy="140" r="8" fill="#aaa" />
+  <circle cx="85" cy="140" r="8" fill="#aaa" />
+  <circle cx="115" cy="140" r="8" fill="#aaa" />
+  <circle cx="145" cy="140" r="8" fill="#ff9800" />
+  <circle cx="55" cy="165" r="8" fill="#aaa" />
+  <circle cx="85" cy="165" r="8" fill="#aaa" />
+  <circle cx="115" cy="165" r="8" fill="#aaa" />
+  <circle cx="145" cy="165" r="8" fill="#2196f3" />
+</svg>
+
+## I want to get started quickly!
+
+### Requirements
+- A Prime calculator (**hardware revision G1, firmware version 20250925**)
+- USB data cable
+- PC toolchain: `arm-none-eabi-gcc`, `make`, `python3`
+
+### One‑click experience
+
+You can directly download the [`examples/`](examples/) folder – all programs are pre‑compiled! Transfer them to your Prime and run them.
+
+```bash
+git clone https://github.com/lcd-xvii/nbprime.git
+cd nbprime
+```
+
+For detailed steps, refer to [`docs/getting-started.md`](docs/getting-started.md).
+
+## What features are available now?
+
+- [x] Basic binary loader (with text I/O)
+- [x] Basic Prime graphics library
+- [x] Event handling and response
+- [x] Partial OS ABI calls
+- [x] Comprehensive math support
+- [x] Simple Makefile build system
+- [ ] Complete SDK documentation (planned)
+- [ ] PC, mobile, and Prime‑compatible toolchain (planned)
+
+## I want to develop my own programs!
+
+You will need:
+
+- **Compiler toolchain**: GNU ARM Embedded Toolchain
+- **Target platform**: Prime G1 (ARM9‑based)
+- **Development environment**: Linux / WSL2
+
+See [`docs/developing.md`](docs/developing.md) for details.
+
+## Where can I find the files I need?
+
+Here is the structure:
+
+```
+nbprime/
+├── examples/        # Example program source code
+├── lib/             # Core libraries, including prime‑tcc and prime‑gcc‑toolchain
+├── tools/           # Helper scripts and development tools, including prime‑code editor
+├── projects/        # Prime binary software packages
+├── docs/            # Documentation
+└── Makefile
+```
+
+## I want to contribute!!
+
+We welcome all forms of contribution, including but not limited to:
+- Reporting bugs (opening issues)
+- Suggesting new features (opening issues)
+- Submitting code (pull requests)
+- Improving documentation
+- Writing tutorials or sharing experiences
+
+Please read [`CONTRIBUTING.md`](CONTRIBUTING.md) first.
+
+## Q&A
+
+**Q: My Prime is not G1 or its firmware is not 20250925 – can I still use it?**  
+A: Currently only the above hardware and firmware versions are supported. Contributions to adapt other versions are welcome.
+
+**Q: Will flashing affect the original system?**  
+A: No. Our loader transfers via USB and uses a backdoor to run, without affecting the original official system functionality.
+
+> This project is licensed under the [MIT License](LICENSE). You are free to use, modify, and distribute it.
