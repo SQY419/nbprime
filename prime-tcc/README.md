@@ -77,6 +77,7 @@ import main
 
 ## 构建（主机侧）
 
+编译环境：Android 15, Termux
 需要 `arm-none-eabi-gcc`
 Ubuntu: `apt install gcc-arm-none-eabi
 binutils-arm-none-eabi libnewlib-arm-none-eabi`
@@ -231,7 +232,7 @@ tcc.elf 形状：ELF32 ET_DYN (PIE)、文本+数据+128KB 栈、156 条
   ~450KB 源码；4MB → ~1.05MB；6MB → ~1.7MB。编译耗时 ≈ (26M + 0.64M×KB)
   条指令，真机 100KB 源码约 1–2 秒、1MB 约 5–13 秒。TCC 无源码长度硬上限
   （输入流式读取，符号表/令牌动态增长）。
-  ⚠️ `hp_sys_max_alloc()` 的探针上限已保守设为 **512KB**（固件对数百 KB
+  [!] `hp_sys_max_alloc()` 的探针上限已保守设为 **512KB**（固件对数百 KB
   大块 malloc/free 的行为尚未完全真机验证；demo 启动阶段不再调用它）。
 - **TCC 自身用 -O0 构建**：tcc.o 在 -O1/-O2 下于模拟器中表现异常（预定义阶段
   报 `struct/union/enum already defined`，疑似 gcc 优化与符号表初始化的交互或
@@ -361,36 +362,7 @@ tcc.elf 形状：ELF32 ET_DYN (PIE)、文本+数据+128KB 栈、156 条
 
 ## 测试
 
-主机侧 ARM 模拟器（`tests/emu_arm2.py`）实现 ARMv5 指令集 + 固件 SVC 后端
-（fopen/fread/fwrite/malloc… 映射到宿主文件系统与内存），端到端跑通：
-TCC 编译 `code.c` + 预编译对象 → `code.elf` → 加载运行 → 输出比对
-（含 framebuffer 像素校验与 LDRD/STRD 对齐检查）。
-
-```
-$ python3 tests/harness.py hello
-[user] hello from TCC on HP Prime!
-[user] fib(15) = 610
-RESULT: user program exit code = 0
-```
-
-测试列表：`hello struct str float gfx math ball rt d ret tri font sys`
-（`rt` 覆盖 ftoa/键码/拆钩子，`d` 为纯 double 算术回归，`ret` 验证 RT_RET
-真实退出码通道，`varg` 覆盖可变参数 printf/sprintf 的 1..8 实参与各转换符，
-`fix` 定点数学、`rng` 随机数/噪声、`codec` 校验与编码、`libc` strtod/qsort/
-bsearch、`gui` 运行 `examples/gui.c`（终端计算器：键盘输入表达式、
-历史回滚、硬键插入函数名，校验 `2+3*2=8` 与 `sqrt(9)=3`），
-`tri` 直接运行 `examples/tri.c` 校验三角形/GROB 新 API，
-`gfxtest` 运行 `examples/gfxtest.c` 的 15 项图形自测面板（读回校验），
-`gfx` 用例覆盖三角形填充/轮廓、GROB 尺寸访问器与跨目标 blit 的像素级校验）。
-另有 `tests/test_main_slot.py`（主机侧单测 main.py 的 tcc.slot 常驻逻辑与
-RT_RET 解析，注入 fake uio 模块，无需计算器）和 `tests/mb_check.py`
-（完整渲染曼德勃罗特 demo 并校验关键像素）。
-
-默认 demo（`calc/main.py` 的 PRIME-C-CODE 区段）：**系统库测试面板**——依次调用 `hp_sys` 各函数（malloc/calloc/realloc/max_alloc/heap_free/get_lcd/debug_open），用 **Montserrat**（标签）+ **Cascadia Code**（数值）画在 LCD 上；每步先打印 `S1..S7` 控制台标记并写入 crash.log（真机崩溃可定位到具体调用）。**ENTER** 重跑面板，**q/ON/ESC** 退出。曼德勃罗特交互 demo 在 `examples/mandelbrot.c`。
-
-独立示例集中在 `examples/`：`hello.c`（最小 printf+递归）、`ball.c`（双缓冲弹球）、
-`sysdemo.c`（系统库测试面板，与 main.py 内嵌 demo 同源）、`mandelbrot.c`
-（定点曼德勃罗集），说明见 `examples/README.md`。`tests/restart_check.py` 验证两轮连续运行按键始终可达。
+独立示例集中在 `examples/`：`hello.c`（最小 printf+递归）、`ball.c`（双缓冲弹球）、`sysdemo.c`（系统库测试面板，与 main.py 内嵌 demo 同源）、`mandelbrot.c`（定点曼德勃罗集）
 
 真机崩溃排查工具：
 - **PRIMELOG**：用户程序所有输出进环形缓冲，main.py 彩色回显；崩溃重启后
@@ -401,8 +373,7 @@ RT_RET 解析，注入 fake uio 模块，无需计算器）和 `tests/mb_check.p
 - **成功运行自动清理**：main.py 在**完整成功**的一次运行收尾时删除
   `stage.txt`/`tcc.log`/`crash.log`——下一次运行不会把上一次的成功输出
   误显示为 "previous crash trace"；崩溃/重启则保留这些文件用于诊断。
-- **Unicorn（QEMU）**：指令语义严格，能抓到模拟器误解码的未定义指令/未对齐
-  访问（本次用它定位了尾调用 bug）。
+- **Unicorn**。
 
 ## 图形库效率
 
