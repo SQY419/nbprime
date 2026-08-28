@@ -14,3 +14,5 @@ def drawChar(grob, c, x, y, color):
             hpprime.strblit2(grob, x, y, 10, 18, 1, j*10, color*24, 10, 20) # 由于prime图片算法问题，等大blit会出现炸裂效果
         return 10
 ```
+
+pc_setting是用于存储设置信息的json文件。
