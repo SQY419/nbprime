@@ -16,9 +16,9 @@ ARM ELF（`code.elf`），再用同一个加载器运行它，输出通过 PRIME
                        └─► PRIMELOG 输出 / 安全拆钩子 / 安全释放
 ```
 
-只有用户的 `code.c` 在计算器上编译；运行时（`rt/` 下的 hp_rt/hp_gfx/hp_input/
-hp_math/hp_string）主机侧预编译成 **`rt_core.o`**，编译耗时因此降到原来的
-约 1/4（模拟器实测：263s → 57s）。
+只有用户的 `code.c` 在计算器上编译。
+运行时（`rt/` 下的 hp_rt/hp_gfx/hp_input/
+hp_math/hp_string）主机侧预编译成 **`rt_core.o`**，编译耗时因此降到原来的约 1/4。
 
 ## 目录
 
@@ -58,8 +58,7 @@ primetcc/
 
 ## 部署到计算器
 
-`primetcc.hpappdir/`（工程根目录旁）是**完整的平铺部署目录**——计算器
-不支持子文件夹，所有文件直接平铺，整体拷到计算器的 `C:\DATA\` 下即可：
+将`primetcc.hpappdir`使用连接软件传输至计算器，或者放入`C:\DATA\`
 
 ```
 C:\DATA\primetcc.hpappdir\
@@ -73,24 +72,19 @@ C:\DATA\primetcc.hpappdir\
 └── rt_aeabi.o     libgcc 除法/软浮点辅助（预编译）
 ```
 
-（`code.c`、`code.elf` 在运行 main.py 时于计算器上生成，`tcc.slot` 记录常驻
-TCC 的地址，同样平铺在 `primetcc.hpappdir\` 下。）
+`code.c`、`code.elf` 在运行 main.py 时于计算器上生成，`tcc.slot` 记录常驻TCC 的地址，同样平铺在 `primetcc.hpappdir\` 下。
 
 在计算器的 Python 应用里运行：
 
 ```python
-import main          # 编译并运行 main.py 里 PRIME-C-CODE 区段的源码
-main.compile_file("test.c")   # 或编译指定的 .c 文件
-main.reset_tcc()     # 换了新 tcc.elf 后强制下次重新加载（或复位计算器）
+import main
 ```
-
-注意：`import main` 会**自动运行**（autorun），第二次 `import main` 在同一
-Python 会话内不会重新执行——需要重跑时在 Python 应用里再次运行该文件。
 
 ## 构建（主机侧）
 
-需要 `arm-none-eabi-gcc`（Ubuntu: `apt install gcc-arm-none-eabi
-binutils-arm-none-eabi libnewlib-arm-none-eabi`）。
+需要 `arm-none-eabi-gcc`
+Ubuntu: `apt install gcc-arm-none-eabi
+binutils-arm-none-eabi libnewlib-arm-none-eabi`
 
 ```sh
 make tcc.elf rt_core.o rt_math.o rt_svc.o rt_aeabi.o   # 全部产物
