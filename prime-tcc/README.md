@@ -436,26 +436,4 @@ RT_RET 解析，注入 fake uio 模块，无需计算器）和 `tests/mb_check.p
 
 ### 运行内存：为什么每轮编译+运行后自由内存减少 ~0.71MB
 
-不是 primetcc 代码泄漏——模拟器（与真机同一条 tcc.elf + rt_core.o 链路）实测：
-
-| 阶段 | 固件堆峰值 | 阶段结束存活 |
-|------|-----------|--------------|
-| TCC 编译（code.c + rt_core.o 等链接） | ~602KB（tcc_delete 释放，剩余 28B） | ~0 |
-| 用户程序（hello） | 0（无堆分配） | 0 |
-
-每轮运行固件堆的工作集 ≈ **TCC 编译工作集（~600KB）+ code.elf 镜像（~180KB）≈
-0.71~0.78MB**，与观测的逐轮下降量一致。代码侧全部 free 了，但 **HP Prime 固件
-的堆分配器对释放块复用不佳（碎片化/不回退堆顶）**——README 上部记载的
-"~900KB malloc/free churn 导致 5-9 次运行后崩溃"正是同一根因；`tcc.slot`
-常驻机制只消除了 tcc.elf（866KB）的每轮加载/释放，**编译工作集的 churn 仍在**。
-
-真机验证：跑 `sysdemo`（S5 heap_free / S4 max_alloc 读数）逐轮对比，或观察
-系统自由内存——若每轮下降量 ≈ 0.7MB 即为此行为，非泄漏。缓解：运行若干轮后
-`main.reset_tcc()` 并重启计算器复位堆顶；不要在同一会话无限次运行。
-
-SVC 编号（`hp_svc.s` / `rt_svc.s`）：fopen 0x1026f, fclose 0x100ca,
-fseek 0x100cf, ftell 0x100d0, fread 0x100d4, fwrite 0x100d7, filesize 0x100cb,
-malloc 0x10037, calloc 0x10038, realloc 0x10039, free 0x1003a,
-os_sleep 0x10008, get_time 0x100a5, get_lcd 0x1008d, get_event 0x1003f。
-调用约定：`push {r0}; push {lr}; svc N`（固件 handler 弹出 LR 返回，结果在 r0）。
-路径为 UTF-16LE。详细见 PrimeC 项目的 README。
+Prime内存管理是💩。
