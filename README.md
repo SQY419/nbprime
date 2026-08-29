@@ -1,4 +1,12 @@
-# Nbprime – **N**ew **B**inary for **Prime**
+# Nbprime
+
+<div align="center">
+
+<p>
+  <img alt="logo" src="/images/nb.png" />
+</p>
+
+**N**ew **B**inary for **Prime**
 
 English | [简体中文](README.zh-CN.md)
 
