@@ -78,7 +78,7 @@ import main
 
 或者点击**清除**金刚键自动运行。
 
-## 构建（主机侧）
+## 构建
 
 需要 `arm-none-eabi-gcc`
 Ubuntu: `apt install gcc-arm-none-eabi
@@ -97,13 +97,11 @@ make deploy    # 重建全部产物并拷贝到 ../primetcc.hpappdir/
 tcc.elf 形状：ELF32 ET_DYN (PIE)、文本+数据+128KB 栈、156 条
 `R_ARM_RELATIVE` 重定位——与现有 Prime shellcode loader 完全兼容。
 
-对 TCC 源码的移植补丁（`src/tinycc-mob/`）：
+对 TCC 源码的移植补丁：
 1. `tcc.h`：`HP_PRIME` 宏启用反斜杠/盘符感知的路径处理（`IS_DIRSEP`/`IS_ABSPATH`）。
-2. `arm-gen.c`：`o()` 参数类型 `uint32_t`→`unsigned int`（newlib 的 uint32_t 是
-   unsigned long，与 tcc.h 原型冲突）。
-3. `arm-link.c`：`R_ARM_V4BX` 归入 `NO_GOTPLT_ENTRY`（纯标记重定位，进 GOT 流程
-   会触发 `fill_local_got_entries: huh?`）。
-4. `tccrun.c`：sigaction 赋值加类型转换（裸机 newlib 的 sigaction 简化版）。
+2. `arm-gen.c`：`o()` 参数类型`uint32_t`→`unsigned int`。
+3. `arm-link.c`：`R_ARM_V4BX` 归入`NO_GOTPLT_ENTRY`。
+4. `tccrun.c`：sigaction 赋值加类型转换。
 
 
 ## 已知限制
