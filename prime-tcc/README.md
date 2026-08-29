@@ -52,7 +52,7 @@ primetcc/
 └── ../primetcc.hpappdir/   平铺部署目录（整体拷到计算器 C:\DATA\）
 ```
 
-## 部署到计算器
+## 安装到计算器
 
 将`primetcc.hpappdir`使用连接软件传输至计算器，或者放入`C:\DATA\`
 
@@ -76,16 +76,16 @@ C:\DATA\primetcc.hpappdir\
 import main
 ```
 
+或者点击**清除**金刚键自动运行。
+
 ## 构建（主机侧）
 
-编译环境：Android 15, Termux
 需要 `arm-none-eabi-gcc`
 Ubuntu: `apt install gcc-arm-none-eabi
 binutils-arm-none-eabi libnewlib-arm-none-eabi`
 
 ```sh
 make tcc.elf rt_core.o rt_math.o rt_svc.o rt_aeabi.o   # 全部产物
-python3 tests/harness.py hello     # 主机侧端到端测试（test 列表见 harness.py）
 ```
 
 重新生成部署目录：
@@ -108,25 +108,11 @@ tcc.elf 形状：ELF32 ET_DYN (PIE)、文本+数据+128KB 栈、156 条
 
 ## 已知限制
 
-- **未定义符号 = 编译错误**：旧版 TCC 对 `-shared` 输出的强未定义符号只发警告并生成 `R_ARM_JUMP_SLOT` 重定位——而 shellcode 加载器只
-  应用 `R_ARM_RELATIVE`，这类调用会跳到地址 0 让计算器**立即重启**。现已在 `tccelf.c` 打补丁：强未定义
-  符号直接报 `undefined symbol 'x' (no dynamic linking on HP Prime -- check for typos)` 编译失败（弱符号仍允许）。
 - **TCC 自身用 -O0 构建**：tcc.o 在 -O1/-O2 下表现异常（预定义阶段报 `struct/union/enum already defined`
 - **结构体不能按值返回/传参**：TCC-ARM 的 struct-by-value return 有缺陷，用指针。
-- **TCC-ARM 无原生浮点**：用户代码里的 double/float 运算经软浮点运行时 （rt_aeabi.o）正确执行，但 TCC 不识别 `1.5f` 后缀等浮点常量语法细节。
-- **固件堆容量有限**：tcc.elf 与加载器现为常驻（见上文"连续运行崩溃"），
-  主要堆流转是每轮的 code.elf（~230KB）。连续运行多次后固件堆碎片/耗尽仍可能
-  导致 TCC 编译或程序加载阶段崩溃重启（crash.log 残留上次的 M4）。长时间使用
-  后 **reset 复位**是最稳妥的做法；
+- **TCC-ARM 无原生浮点**：用户代码里的 double/float 运算经软浮点运行时正确执行，但 TCC 不识别 `1.5f` 后缀等浮点常量语法细节。
 - **GCC 尾调用优化禁用**：rt_core.o 用 `-fno-optimize-sibling-calls` 编译。尾调用（`b func`）配合固件 SVC 的返回机制（svc 从栈弹 lr）会让执行流错乱、落入数据区崩溃重启
-- **入口 SP 对齐**：调试接口给 code.elf 的入口 SP 可能只 4 字节对齐，而 GCC编译的运行时（ftoa/openlibm）用 LDRD/STRD 访问 double，要求 8 字节对齐（AAPCS）；ARM926EJ-S 对未对齐 LDRD/STRD 抛数据中止。`hp_entry` 先`bic sp, sp, #7` 对齐再进 main。
-- **GCC 运行时回调 TCC 代码必须穿"寄存器防护壳"（hp_icall2）**：
-  TCC 不保护 r4-r11，这不止影响 hp_entry 边界——rt_core.o（GCC）里的
-  hp_gui_handle 调用 on_click（TCC 的 btn_*）后，自己的 r4（hit 指针）
-  就变成了垃圾，`return hit->id` 直接野读。qsort/bsearch 的比较回调同理。
-  修复：所有 GCC→TCC 间接调用统一走 hp_icall2（裸汇编在 blx 前后保存/
-  恢复 r4-r11、ip、lr）。教训同源：**凡是被 TCC 代码回调的边界都要自保**。
-- **ftoa 自动显示模式（dec<0）**：整数不带小数点（8 就是 "8"），非整数
+- **ftoa 自动显示模式**：整数不带小数点（8 就是 "8"），非整数
   只保留有效小数并去尾零（0.1、1/3→0.333333333333333），|d|≥1e18 或
   <1e-15 转科学计数（1e+20、1.234567890123457e+22）——旧实现的
   u64 上限会打出 ">1e19"。dec≥0 的固定位数模式原样保留。
@@ -141,10 +127,6 @@ tcc.elf 形状：ELF32 ET_DYN (PIE)、文本+数据+128KB 栈、156 条
 - **crash.log 分层**：demo 关键步骤写 crash.log（S1–S21），hp_entry 退出写
   E1，main.py 收尾写 M1–M4——崩溃重启后再次 `import main` 会显示
   `last crash.log step`，精确定位崩溃层。
-- **成功运行自动清理**：main.py 在**完整成功**的一次运行收尾时删除
-  `stage.txt`/`tcc.log`/`crash.log`——下一次运行不会把上一次的成功输出
-  误显示为 "previous crash trace"；崩溃/重启则保留这些文件用于诊断。
-- **Unicorn**。
 
 ## 固件接口（HP Prime G1）
 
