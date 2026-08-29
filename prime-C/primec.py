@@ -4,10 +4,7 @@
 #       assignment, bitwise/shift ops, ternary, short-circuit &&/||,
 #       firmware syscall builtins __svc()/__sleep().
 # Runs under MicroPython. No external packages.
-try:
-    import ustruct as struct
-except ImportError:
-    import struct
+import ustruct as struct
 
 PT_LOAD = 1
 PT_DYNAMIC = 2
