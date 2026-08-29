@@ -1,5 +1,12 @@
 # Nbprime 
-#### Prime 平台的全新二进制（**N**ew **B**inary for **Prime**）
+<div align="center">
+
+<p>
+  <img alt="logo" src="/images/nb.png" />
+</p>
+
+</div>
+**N**ew **B**inary for **Prime**
 
 简体中文 | [English](README.md)
 
