@@ -6,6 +6,8 @@
   <img alt="logo" src="/images/nb.png" />
 </p>
 
+</div>
+
 **N**ew **B**inary for **Prime**
 
 English | [简体中文](README.zh-CN.md)
