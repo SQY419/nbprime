@@ -1,5 +1,7 @@
 version 0.9.1c, 2026.02
 
+代码已进行规范化
+
 使用自定义字体的原理：
 把ASCII字符画在一张png上，用hpprime库的blit按照ord计算位置，然后复制到grob上。
 
