@@ -1,1 +1,6 @@
-developing
+## G1 硬件性能
+CPU	三星S3C2416XH-40，ARM926EJ-S，400MHz
+
+ROM	256MB
+
+RAM	32MB
