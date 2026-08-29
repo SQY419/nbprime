@@ -1,11 +1,20 @@
-# Nbprime - Prime 平台的全新二进制（**N**ew **B**inary for **Prime**）
+# Nbprime 
+<div align="center">
+
+<p>
+  <img alt="logo" src="/images/nb.png" />
+</p>
+
+</div>
+
+**N**ew **B**inary for **Prime**
 
 简体中文 | [English](README.md)
 
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![GitHub stars](https://img.shields.io/github/stars/lcd-xvii/nbprime)]()
 
-***让 Prime 再次伟大。***
+***Make Prime great again.***
 
 ## 这是什么项目？
 
@@ -16,7 +25,7 @@
 
 项目目前处于早期阶段，已实现基本的二进制加载器原型，并支持几个示例程序。我们诚邀你参与共建！
 
-> *（放张实机图片或项目图标）*
+![](/images/primetcc-example.jpg)
 
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
   <defs>
@@ -111,7 +120,7 @@ nbprime/
 **Q：我的 Prime 型号不是 G1 或者固件不是 20250925，能用吗？**\
 A：目前仅支持以上硬件和固件版本，欢迎开发和适配其他版本。
 
-**Q：刷写后会影响原系统吗？**\r
+**Q：刷写后会影响原系统吗？**
 A：不会，我们的加载器通过 USB 传输，利用后门运行，不影响原有官方系统功能。
 
 > 本项目采用 [MIT 许可证](LICENSE)，你可以自由使用、修改和分发。

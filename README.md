@@ -1,4 +1,14 @@
-# Nbprime – **N**ew **B**inary for **Prime**
+# Nbprime
+
+<div align="center">
+
+<p>
+  <img alt="logo" src="/images/nb.png" />
+</p>
+
+</div>
+
+**N**ew **B**inary for **Prime**
 
 English | [简体中文](README.zh-CN.md)
 
@@ -16,7 +26,7 @@ English | [简体中文](README.zh-CN.md)
 
 The project is currently in its early stages, with a basic binary loader prototype already implemented and several example programs available. We warmly invite you to join and contribute!
 
-> *(Placeholder for actual device photo or project icon)*
+![](/images/primetcc-example.jpg)
 
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
   <defs>
