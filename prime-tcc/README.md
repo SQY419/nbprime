@@ -1,29 +1,18 @@
 # primeTCC
 #### TCC (TinyCC) 移植到 HP Prime G1 计算器
 
-在 **HP Prime G1**上运行的**TinyCC** 0.9.27 移植。TCC 本体交叉编译为单文件 ELF，由计算器上的MicroPython 加载器（shellcode）装入内存运行；在计算器上把用户 C 源码编译成ARM ELF（`code.elf`），再用同一个加载器运行它，输出通过 PRIMELOG 环形缓冲回显。
+在 **HP Prime G1**上运行的**TinyCC** 0.9.27 移植。TCC 本体交叉编译为单文件 ELF，由计算器上 MicroPython 加载器（shellcode）装入内存运行；在计算器上把用户 C 源码编译成ARM ELF（`code.elf`），再用同一个加载器运行它，输出通过 PRIMELOG 环形缓冲回显。
 
-```
-在计算器上:  写 C 源码 (main.py 的 PRIME-C-CODE 区段)
-             └─► TCC (tcc.elf, 在计算器上运行)
-                  │  -nostdlib -shared -Wl,-e,hp_entry
-                  │  -I . code.c rt_core.o rt_svc.o rt_aeabi.o rt_math.o
-                  ▼
-             code.elf ──► shellcode loader ──► hp_entry ──► main()
-                       └─► PRIMELOG 输出 / 安全拆钩子 / 安全释放
-```
-
-只有用户的 `code.c` 在计算器上编译。
-运行时（`rt/` 下的 hp_rt/hp_gfx/hp_input/hp_math/hp_string）主机侧预编译成 **`rt_core.o`**，编译耗时因此降到原来的约 1/4。
+只有用户的 `code.c` 在计算器上编译；运行时预编译成 **`rt_core.o`**。
 
 ## 目录
 
 ```
 primetcc/
-├── API.md             每个头文件的函数用法速查（新手从这里开始）
+├── API.md
 ├── Makefile            构建（主机侧交叉编译）
 ├── hp/
-│   ├── hp_libc.h       迷你 C 运行库声明（TCC 二进制自己用的）
+│   ├── hp_libc.h       迷你 C 运行库声明
 │   ├── hp_libc.c       文件IO/内存/字符串/exit… 全部走固件 SVC
 │   ├── hp_vsnprintf.c  vsnprintf 核心
 │   ├── hp_svc.s        SVC 包装 (push{r0};push{lr};svc N) + setjmp/longjmp + crt0
@@ -49,7 +38,7 @@ primetcc/
 │   ├── harness.py      端到端测试（TCC 编译→加载→运行→比对输出）
 │   └── restart_check.py 多轮连续运行按键可达性回归
 ├── src/tinycc-mob/     TCC 源码（打了少量移植补丁）
-└── ../primetcc.hpappdir/   平铺部署目录（整体拷到计算器 C:\DATA\）
+└── ../primetcc.hpappdir/   产物
 ```
 
 ## 安装到计算器
@@ -110,21 +99,14 @@ tcc.elf 形状：ELF32 ET_DYN (PIE)、文本+数据+128KB 栈、156 条
 - **结构体不能按值返回/传参**：TCC-ARM 的 struct-by-value return 有缺陷，用指针。
 - **TCC-ARM 无原生浮点**：用户代码里的 double/float 运算经软浮点运行时正确执行，但 TCC 不识别 `1.5f` 后缀等浮点常量语法细节。
 - **GCC 尾调用优化禁用**：rt_core.o 用 `-fno-optimize-sibling-calls` 编译。尾调用（`b func`）配合固件 SVC 的返回机制（svc 从栈弹 lr）会让执行流错乱、落入数据区崩溃重启
-- **ftoa 自动显示模式**：整数不带小数点（8 就是 "8"），非整数
-  只保留有效小数并去尾零（0.1、1/3→0.333333333333333），|d|≥1e18 或
-  <1e-15 转科学计数（1e+20、1.234567890123457e+22）——旧实现的
-  u64 上限会打出 ">1e19"。dec≥0 的固定位数模式原样保留。
 
 ## 测试
 
-独立示例集中在 `examples/`：`hello.c`（最小 printf+递归）、`ball.c`（双缓冲弹球）、`sysdemo.c`（系统库测试面板，与 main.py 内嵌 demo 同源）、`mandelbrot.c`（定点曼德勃罗集）
+独立示例集中在 `examples/`：`hello.c`、`ball.c`、`sysdemo.c`、`mandelbrot.c`
 
 真机崩溃排查工具：
-- **PRIMELOG**：用户程序所有输出进环形缓冲，main.py 彩色回显；崩溃重启后
-  控制台输出丢失，但 TCC 阶段的输出持久化在 `tcc.log`。
-- **crash.log 分层**：demo 关键步骤写 crash.log（S1–S21），hp_entry 退出写
-  E1，main.py 收尾写 M1–M4——崩溃重启后再次 `import main` 会显示
-  `last crash.log step`，精确定位崩溃层。
+- **PRIMELOG**：main.py 彩色回显；崩溃重启后 TCC 阶段的输出持久化在 `tcc.log`。
+- **crash.log 分层**：demo 关键步骤写 crash.log（S1–S21），hp_entry 退出写 E1，main.py 收尾写 M1–M4——崩溃重启后再次 `import main` 会显示 `last crash.log step`，精确定位崩溃层。
 
 ## 固件接口（HP Prime G1）
 
