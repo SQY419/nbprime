@@ -1,11 +1,12 @@
-# Nbprime - Prime 平台的全新二进制（**N**ew **B**inary for **Prime**）
+# Nbprime 
+#### Prime 平台的全新二进制（**N**ew **B**inary for **Prime**）
 
 简体中文 | [English](README.md)
 
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![GitHub stars](https://img.shields.io/github/stars/lcd-xvii/nbprime)]()
 
-***让 Prime 再次伟大。***
+***Make Prime great again.***
 
 ## 这是什么项目？
 
