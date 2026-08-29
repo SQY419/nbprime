@@ -10,8 +10,8 @@
 - `ccode.elf`     由 main.py 生成
 - `Makefile`      主机端便捷构建目标
 
-## ccode.py 文件格式
-C 源码必须放在如下标记之间：
+## 文件格式
+C 源码必须放在ccode.py的标记之间：
 
 ```c
 /* PRIME-C-CODE-BEGIN */
