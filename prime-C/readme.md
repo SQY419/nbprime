@@ -1,6 +1,6 @@
 # PrimeC
 
-一个为 HP Prime（ARM926EJ-S / ARMv5TEJ）设计的微型自托管 C 编译器。  
+一个为 HP Prime 设计的微型自托管 C 编译器。  
 可直接在计算器上编辑 C 代码，在设备本地编译，并通过 Prime 现有的 ELF 加载器运行生成的 ARM 机器码。
 
 ## 目录结构
