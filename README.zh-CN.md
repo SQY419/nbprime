@@ -16,7 +16,7 @@
 
 项目目前处于早期阶段，已实现基本的二进制加载器原型，并支持几个示例程序。我们诚邀你参与共建！
 
-> *（放张实机图片或项目图标）*
+![](/images/primetcc-example.jpg)
 
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
   <defs>
