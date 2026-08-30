@@ -113,7 +113,7 @@ We welcome all forms of contribution, including but not limited to:
 - Improving documentation
 - Writing tutorials or sharing experiences
 
-Please read [`CONTRIBUTING.md`](CONTRIBUTING.md) first.
+Please read [`contributing.md`](contributing.md) first.
 
 ## Q&A
 
