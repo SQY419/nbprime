@@ -99,7 +99,6 @@ nbprime/
 ├── examples/        # 可以直接扔进计算器使用的东西
 ├── lib/             # prime-gcc-toolchain
 ├── prime-xxx/       # 项目文件
-├── projects/        # Prime 二进制软件包
 ├── docs/            # 文档
 └── Makefile
 ```
