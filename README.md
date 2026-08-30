@@ -97,11 +97,10 @@ Here is the structure:
 
 ```
 nbprime/
-├── examples/        # Example program source code
-├── lib/             # Core libraries, including prime‑tcc and prime‑gcc‑toolchain
-├── tools/           # Helper scripts and development tools, including prime‑code editor
-├── projects/        # Prime binary software packages
-├── docs/            # Documentation
+├── examples/        # use it on your calculator directly.
+├── lib/             # prime-gcc-toolchain
+├── prime-xxx/       # project
+├── docs/            # 文档
 └── Makefile
 ```
 
