@@ -1,6 +1,8 @@
 # primeTCC
 #### TCC (TinyCC) 移植到 HP Prime G1 计算器
 
+本文件夹**并不**能直接安装到计算器，请查看[/examples](/examples)
+
 在 **HP Prime G1**上运行的**TinyCC** 0.9.27 移植。TCC 本体交叉编译为单文件 ELF，由计算器上 MicroPython 加载器（shellcode）装入内存运行；在计算器上把用户 C 源码编译成ARM ELF（`code.elf`），再用同一个加载器运行它，输出通过 PRIMELOG 环形缓冲回显。
 
 只有用户的 `code.c` 在计算器上编译；运行时预编译成 **`rt_core.o`**。

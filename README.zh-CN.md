@@ -96,10 +96,9 @@ cd nbprime
 
 ```
 nbprime/
-├── examples/        # 示例程序源码
-├── lib/             # 核心库，包含 prime-tcc 与 prime-gcc-toolchain
-├── tools/           # 辅助脚本 与开发工具，包含 prime-code 代码编辑器
-├── projects/        # Prime 二进制软件包
+├── examples/        # 可以直接扔进计算器使用的东西
+├── lib/             # prime-gcc-toolchain
+├── prime-xxx/       # 项目文件
 ├── docs/            # 文档
 └── Makefile
 ```
